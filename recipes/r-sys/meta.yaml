@@ -1,0 +1,58 @@
+{% set version = '1.6' %}
+
+package:
+  name: r-sys
+  version: {{ version|replace("-", "_") }}
+
+source:
+  fn: sys_{{ version }}.tar.gz
+  url:
+    - {{ cran_mirror }}/src/contrib/sys_{{ version }}.tar.gz
+    - {{ cran_mirror }}/src/contrib/Archive/sys/sys_{{ version }}.tar.gz
+  sha256: 3b1125ee022848efb434bd82aa5945db859ff6ec0f1fad240bf0d831a36b539a
+
+build:
+  merge_build_host: True
+  number: 0
+
+  rpaths:
+    - lib/R/lib/
+    - lib/
+
+requirements:
+  build:
+    - {{ compiler('c') }}
+    - {{native}}toolchain
+    - {{posix}}filesystem
+    - {{posix}}sed
+    - {{posix}}grep
+    - {{posix}}autoconf
+    - {{posix}}automake
+    - {{posix}}automake-wrapper
+    - {{posix}}pkg-config
+    - {{posix}}make
+    - {{posix}}coreutils
+    - {{posix}}zip
+
+  host:
+    - r-base
+
+  run:
+    - r-base
+    - {{native}}gcc-libs
+
+test:
+  commands:
+    - $R -e "library('sys')"
+
+about:
+  home: https://github.com/jeroen/sys#readme
+  license: MIT + file LICENSE
+  summary: Powerful replacements for base system2 with consistent behavior across platforms.
+    Supports interruption, background tasks, and full control over STDOUT / STDERR binary
+    or text streams. On Unix systems the package also has functions for evaluating expressions
+    inside a temporary fork. Such evaluations have no side effects on the main R process,
+    and support reliable interrupts and timeouts. This provides the basis for a sandboxing
+    mechanism.
+  license_family: MIT
+
